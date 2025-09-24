@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Hellen Moda Fitness</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+</head>
+<body class="admin-body">
+    <div class="admin-container" id="login-container">
+        <div class="login-form">
+            <h2>Painel Administrativo</h2>
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-email">E-mail</label>
+                    <input type="email" id="admin-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Senha</label>
+                    <input type="password" id="admin-password" required>
+                </div>
+                <button type="submit" class="login-btn">Entrar</button>
+            </form>
+            <div id="login-error" class="error-message"></div>
+        </div>
+    </div>
+
+    <div class="admin-dashboard" id="admin-dashboard" style="display: none;">
+        <header class="admin-header">
+            <h1>Painel Administrativo</h1>
+            <button id="admin-logout" class="logout-btn">Sair</button>
+        </header>
+
+        <nav class="admin-nav">
+            <ul>
+                <li><a href="#settings" class="nav-link active">Configurações do Site</a></li>
+                <li><a href="#products" class="nav-link">Gerenciar Produtos</a></li>
+                <li><a href="#inventory" class="nav-link">Controle de Estoque</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-main">
+            <!-- Seção de Configurações -->
+            <section id="settings" class="admin-section active">
+                <h2>Configurações do Site</h2>
+                
+                <form id="site-settings-form">
+                    <div class="form-group">
+                        <label for="site-logo-url">URL da Logo</label>
+                        <input type="url" id="site-logo-url">
+                        <small>Cole a URL da imagem da logo</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="primary-color">Cor Primária</label>
+                        <input type="color" id="primary-color" value="#4a90e2">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="secondary-color">Cor Secundária</label>
+                        <input type="color" id="secondary-color" value="#f8f9fa">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="text-color">Cor do Texto</label>
+                        <input type="color" id="text-color" value="#333333">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="background-color">Cor de Fundo</label>
+                        <input type="color" id="background-color" value="#ffffff">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="accent-color">Cor de Destaque</label>
+                        <input type="color" id="accent-color" value="#e74c3c">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="header-message">Mensagem do Cabeçalho</label>
+                        <input type="text" id="header-message" maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="footer-content">Conteúdo do Rodapé (HTML)</label>
+                        <textarea id="footer-content" rows="4"></textarea>
+                        <small>Use HTML para links: &lt;a href="url"&gt;Texto&lt;/a&gt;</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="whatsapp-number">Número do WhatsApp</label>
+                        <input type="text" id="whatsapp-number" placeholder="5511999999999">
+                        <small>Formato: 55DDDNUMERO (sem espaços ou caracteres especiais)</small>
+                    </div>
+                    
+                    <button type="submit" class="save-btn">Salvar Configurações</button>
+                </form>
+            </section>
+
+            <!-- Seção de Produtos -->
+            <section id="products" class="admin-section">
+                <h2>Gerenciar Produtos</h2>
+                
+                <button id="add-product-btn" class="add-btn">Adicionar Novo Produto</button>
+                
+                <div class="products-list" id="products-list">
+                    <!-- Lista de produtos será carregada aqui -->
+                </div>
+                
+                <!-- Formulário de Adicionar/Editar Produto -->
+                <div id="product-form-container" style="display: none;">
+                    <h3 id="product-form-title">Adicionar Produto</h3>
+                    
+                    <form id="product-form">
+                        <input type="hidden" id="product-id">
+                        
+                        <div class="form-group">
+                            <label for="product-name">Nome do Produto</label>
+                            <input type="text" id="product-name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="product-price">Preço (R$)</label>
+                            <input type="number" id="product-price" step="0.01" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="product-category">Categoria</label>
+                            <select id="product-category" required>
+                                <option value="">Selecione...</option>
+                                <option value="conjuntos">Conjuntos</option>
+                                <option value="macaquinhos">Macaquinhos</option>
+                                <option value="tops">Tops</option>
+                                <option value="shorts">Shorts</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="product-images">Imagens do Produto (até 3 URLs)</label>
+                            <div id="image-inputs">
+                                <input type="url" class="image-url" placeholder="URL da imagem 1" required>
+                            </div>
+                            <button type="button" id="add-image-btn" class="small-btn">+ Adicionar outra imagem</button>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Cores e Estoque</label>
+                            <div id="color-stock-inputs">
+                                <div class="color-stock-row">
+                                    <input type="text" class="color-name" placeholder="Nome da cor" required>
+                                    <input type="number" class="color-stock" placeholder="Estoque" min="0" required>
+                                    <button type="button" class="remove-color-btn">🗑️</button>
+                                </div>
+                            </div>
+                            <button type="button" id="add-color-btn" class="small-btn">+ Adicionar outra cor</button>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="save-btn">Salvar Produto</button>
+                            <button type="button" id="cancel-product-btn" class="cancel-btn">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Seção de Estoque -->
+            <section id="inventory" class="admin-section">
+                <h2>Controle de Estoque</h2>
+                
+                <div class="inventory-table-container">
+                    <table class="inventory-table" id="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Categoria</th>
+                                <th>Cores/Estoque</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dados de estoque serão carregados aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
