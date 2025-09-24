@@ -4,260 +4,166 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hellen Moda Fitness</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="logo-container">
-            <img id="site-logo" src="" alt="Logo" class="logo">
+    <header>
+        <div class="header-top">
+            <div class="logo" id="site-logo">
+                <!-- Logo será carregada dinamicamente -->
+            </div>
+            <div class="header-icons">
+                <button class="icon-btn" id="home-btn">🏠</button>
+                <button class="icon-btn" id="menu-btn">☰</button>
+                <button class="icon-btn" id="cart-btn">🛒</button>
+            </div>
         </div>
-        <div class="header-icons">
-            <button class="icon-btn home-btn" title="Início">🏠</button>
-            <button class="icon-btn menu-btn" title="Menu">☰</button>
-            <button class="icon-btn cart-btn" title="Carrinho">🛒</button>
+        <div class="header-message" id="header-message">
+            <!-- Mensagem editável pelo admin -->
         </div>
     </header>
 
-    <!-- Banner Message -->
-    <div class="banner-message" id="banner-message">
-        Escolha seu produto e seu pedido será enviado via WhatsApp.
-    </div>
-
     <!-- Menu Lateral -->
     <div class="side-menu" id="side-menu">
-        <button class="close-menu-btn" id="close-menu">✕</button>
-        <nav class="menu-nav">
-            <a href="#" class="menu-link active" data-category="all">Todos os produtos</a>
-            <a href="#" class="menu-link" data-category="conjuntos">Conjuntos</a>
-            <a href="#" class="menu-link" data-category="macaquinhos">Macaquinhos</a>
-            <a href="#" class="menu-link" data-category="tops">Tops</a>
-            <a href="#" class="menu-link" data-category="shorts">Shorts</a>
-        </nav>
+        <div class="menu-header">
+            <button class="close-btn" id="close-menu">✕</button>
+        </div>
+        <ul class="menu-list">
+            <li><a href="#" data-category="all">Todos os produtos</a></li>
+            <li><a href="#" data-category="conjuntos">Conjuntos</a></li>
+            <li><a href="#" data-category="macaquinhos">Macaquinhos</a></li>
+            <li><a href="#" data-category="tops">Tops</a></li>
+            <li><a href="#" data-category="shorts">Shorts</a></li>
+        </ul>
     </div>
 
+    <!-- Overlay para menu e popups -->
+    <div class="overlay" id="overlay"></div>
+
     <!-- Conteúdo Principal -->
-    <main class="main-content">
-        <section class="products-section" id="products-section">
+    <main>
+        <section class="products-section">
+            <h2 id="category-title">Todos os produtos</h2>
             <div class="products-grid" id="products-grid">
-                <!-- Produtos serão carregados aqui -->
-            </div>
-        </section>
-
-        <!-- Página do Produto -->
-        <section class="product-page hidden" id="product-page">
-            <button class="back-btn" id="back-to-products">← Voltar para Produtos</button>
-            <div class="product-detail" id="product-detail"></div>
-        </section>
-
-        <!-- Carrinho -->
-        <section class="cart-page hidden" id="cart-page">
-            <button class="back-btn" id="back-from-cart">← Continuar Comprando</button>
-            <div class="cart-content" id="cart-content">
-                <!-- Itens do carrinho serão carregados aqui -->
+                <!-- Produtos serão carregados dinamicamente -->
             </div>
         </section>
     </main>
 
-    <!-- Botão Flutuante Finalizar Compra -->
-    <button class="floating-checkout-btn hidden" id="floating-checkout">
-        <i class="fas fa-shopping-bag"></i> Finalizar Compra
-    </button>
-
-    <!-- Modal Finalização -->
-    <div class="modal-overlay hidden" id="checkout-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="close-checkout">✕</button>
-            <h2>Finalizar Pedido</h2>
-            <form id="checkout-form" class="checkout-form"></form>
-        </div>
-    </div>
-
     <!-- Footer -->
-    <footer class="footer">
+    <footer>
         <div class="footer-content" id="footer-content">
-            <!-- Conteúdo do footer será carregado aqui -->
+            <!-- Conteúdo do footer será carregado dinamicamente -->
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Hellen Moda Fitness. Todos os direitos reservados.</p>
+        <div class="admin-link">
+            <a href="admin/" class="admin-icon">🎲</a>
         </div>
     </footer>
 
-    <!-- Botão Admin -->
-    <button class="admin-btn" id="admin-login-btn" title="Painel Admin">🎲</button>
+    <!-- Carrinho de Compras -->
+    <div class="cart-panel" id="cart-panel">
+        <div class="cart-header">
+            <h3>Seu Carrinho</h3>
+            <button class="close-btn" id="close-cart">✕</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Itens do carrinho serão carregados dinamicamente -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total: R$ <span id="cart-total">0.00</span></span>
+            </div>
+            <button class="checkout-btn" id="checkout-btn">Finalizar Compra</button>
+        </div>
+    </div>
 
-    <!-- Modal Login Admin -->
-    <div class="modal-overlay hidden" id="admin-login-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="close-admin-login">✕</button>
-            <h2>Login Administrador</h2>
-            <form id="admin-login-form" class="admin-form">
+    <!-- Popup de Finalização de Compra -->
+    <div class="checkout-popup" id="checkout-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3>Finalizar Pedido</h3>
+                <button class="close-btn" id="close-checkout">✕</button>
+            </div>
+            <form id="checkout-form">
                 <div class="form-group">
-                    <label>E-mail:</label>
-                    <input type="email" placeholder="seu@email.com" required>
+                    <label for="customer-name">Nome Completo</label>
+                    <input type="text" id="customer-name" required>
                 </div>
                 <div class="form-group">
-                    <label>Senha:</label>
-                    <input type="password" placeholder="Sua senha" required>
+                    <label for="customer-cep">CEP</label>
+                    <input type="text" id="customer-cep" required>
+                    <small>O frete será calculado quando o pedido for enviado via WhatsApp.</small>
                 </div>
-                <button type="submit">Entrar no Painel</button>
+                <div class="form-group">
+                    <label for="customer-address">Endereço Completo</label>
+                    <input type="text" id="customer-address" required>
+                </div>
+                <div class="form-group">
+                    <label for="delivery-type">Tipo de Entrega</label>
+                    <select id="delivery-type" required>
+                        <option value="">Selecione...</option>
+                        <option value="transportadora">Transportadora</option>
+                        <option value="excursões">Excursões</option>
+                        <option value="uber">Uber</option>
+                        <option value="correio">Correio</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="customer-phone">Telefone</label>
+                    <input type="tel" id="customer-phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Forma de Pagamento</label>
+                    <div class="payment-option">
+                        <input type="radio" id="payment-pix" name="payment" value="pix" checked>
+                        <label for="payment-pix">Pix</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="order-notes">Observações (opcional)</label>
+                    <textarea id="order-notes"></textarea>
+                </div>
+                <div class="order-summary">
+                    <h4>Resumo do Pedido</h4>
+                    <div id="order-summary-items">
+                        <!-- Itens do pedido serão carregados dinamicamente -->
+                    </div>
+                    <div class="order-total">
+                        <strong>Total: R$ <span id="order-total">0.00</span></strong>
+                    </div>
+                </div>
+                <div class="min-order-warning" id="min-order-warning">
+                    <p>⚠️ Pedido mínimo de 10 peças.</p>
+                </div>
+                <button type="submit" class="submit-order-btn" id="submit-order-btn">Enviar Pedido via WhatsApp</button>
             </form>
         </div>
     </div>
 
-    <!-- Painel Admin -->
-    <div class="admin-panel hidden" id="admin-panel">
-        <div class="admin-header">
-            <h2>Painel Administrativo - Hellen Moda Fitness</h2>
-            <button id="logout-admin">Sair do Painel</button>
-        </div>
-        
-        <div class="admin-sections">
-            <div class="admin-tabs">
-                <button class="admin-tab active" data-tab="settings">Configurações</button>
-                <button class="admin-tab" data-tab="products">Gerenciar Produtos</button>
-                <button class="admin-tab" data-tab="stock">Controle de Estoque</button>
+    <!-- Popup do Produto -->
+    <div class="product-popup" id="product-popup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <button class="close-btn" id="close-product">✕</button>
             </div>
-
-            <!-- Configurações do Site -->
-            <div class="tab-content active" id="settings-tab">
-                <div class="admin-section">
-                    <h3>Configurações do Site</h3>
-                    <form id="site-settings-form" class="admin-form">
-                        <div class="form-group">
-                            <label>URL do Logo:</label>
-                            <input type="url" id="logo-url" placeholder="https://exemplo.com/logo.png">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Cor Primária (Botões):</label>
-                            <input type="color" id="primary-color" value="#ff6b6b">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Cor Secundária:</label>
-                            <input type="color" id="secondary-color" value="#4ecdc4">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Cor do Texto:</label>
-                            <input type="color" id="text-color" value="#333333">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Cor do Cabeçalho:</label>
-                            <input type="color" id="header-color" value="#ffffff">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Cor do Banner:</label>
-                            <input type="color" id="banner-color" value="#ff6b6b">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Mensagem do Banner:</label>
-                            <input type="text" id="banner-message-input" placeholder="Sua mensagem promocional">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Número do WhatsApp (com DDD):</label>
-                            <input type="text" id="whatsapp-number" placeholder="5511999999999">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Conteúdo do Rodapé (HTML):</label>
-                            <textarea id="footer-content-input" rows="8" placeholder="Digite o HTML do rodapé..."></textarea>
-                        </div>
-                        
-                        <button type="submit">Salvar Configurações</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Gerenciar Produtos -->
-            <div class="tab-content" id="products-tab">
-                <div class="admin-section">
-                    <h3>Adicionar/Editar Produto</h3>
-                    <form id="product-form" class="admin-form">
-                        <input type="hidden" id="editing-product-id">
-                        
-                        <div class="form-group">
-                            <label>Nome do Produto:</label>
-                            <input type="text" id="product-name" placeholder="Ex: Conjunto Fitness Premium" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Preço (R$):</label>
-                            <input type="number" id="product-price" step="0.01" placeholder="99.90" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Categoria:</label>
-                            <select id="product-category" required>
-                                <option value="">Selecione uma categoria</option>
-                                <option value="conjuntos">Conjuntos</option>
-                                <option value="macaquinhos">Macaquinhos</option>
-                                <option value="tops">Tops</option>
-                                <option value="shorts">Shorts</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>URL das Imagens:</label>
-                            <input type="url" id="product-image1" placeholder="Imagem principal (obrigatória)" required>
-                            <input type="url" id="product-image2" placeholder="Segunda imagem (opcional)">
-                            <input type="url" id="product-image3" placeholder="Terceira imagem (opcional)">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Cores e Estoque:</label>
-                            <div id="color-inputs">
-                                <!-- Cores serão adicionadas aqui -->
-                            </div>
-                            <button type="button" id="add-color-btn" style="margin-top: 1rem;">
-                                <i class="fas fa-plus"></i> Adicionar Cor
-                            </button>
-                        </div>
-                        
-                        <button type="submit" id="save-product-btn">
-                            <i class="fas fa-save"></i> Salvar Produto
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Controle de Estoque -->
-            <div class="tab-content" id="stock-tab">
-                <div class="admin-section">
-                    <h3>Controle de Estoque</h3>
-                    <div class="stock-table-container">
-                        <table class="stock-table" id="stock-table">
-                            <thead>
-                                <tr>
-                                    <th>Produto</th>
-                                    <th>Cor</th>
-                                    <th>Estoque</th>
-                                    <th>Reservado</th>
-                                    <th>Disponível</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="stock-tbody">
-                                <!-- Dados de estoque serão carregados aqui -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="product-details" id="product-details">
+                <!-- Detalhes do produto serão carregados dinamicamente -->
             </div>
         </div>
     </div>
 
-    <script src="firebase-config.js"></script>
-    <script src="app.js"></script>
-    <script src="admin.js"></script>
+    <!-- Botão Flutuante Finalizar Compra -->
+    <button class="floating-checkout-btn" id="floating-checkout-btn">Finalizar Compra</button>
+
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
